@@ -1,0 +1,42 @@
+<?php
+ 
+$accessToken =   "EAAKMxvAJZB1YBAMG3y6Kc78uKuYUfMCWamgDzrPweEcKHQQA66ZC4oiZBLglsp1Rd4W177ZC8zZCySXVyccwZCcAsUXS3mndhdahokN8TdqqfZCIzDy6CkYY9eLIoJefuEW9JaRQJc6VqC59GZAoC3GQF2lqz4pfOSZC0f29lS4iLGfVYoBpJFpyzLesZAzgFxao0ZD";
+
+$Verify_Token = "KnowledgeTrender";
+
+$hubVerify_Token = "null";
+if(isset($_REQUEST['hub_mode']) && $_REQUEST['hub_mode']) =='subscribe'){
+&challange = $_REQUEST['hub_challenge'];
+&hub_verify_token = $_REQUEST['hub_challenge'];
+if($hub_verify_token=== $Verify_Token) {
+	header ('HTTP/1.1 200 OK');
+  echo $challenge;
+  die;
+}
+
+$input = json_decode(file_get_contents('php://input'), true);
+
+$senderID = $input['entry'][0]['messaging'][0]['sender']['id'];
+$messageText = $input['entry'][0]['messaging'][0]['message']['text'];
+$response = null;
+
+//set Message
+if($messageText == "hi") {
+    $answer = "Hello";
+}
+
+//send message to facebook bot
+$response = [
+    'recipient' => [ 'id' => $senderId ],
+    'message' => [ 'text' => $answer ]
+];
+
+$ch = curl_init('https://graph.facebook.com/v2.6/me/messages?access_token='.$accessToken);
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($response));
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+if(!empty($input)){
+$result = curl_exec($ch);
+}
+curl_close($ch);
+?>
